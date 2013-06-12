@@ -1,0 +1,804 @@
+Terminales no usados en gramática
+
+   T_URL
+   T_NUM
+   T_ENTER
+   T_CDATA_I
+   T_CDATA_F
+   CONT_DATA
+
+
+Gramática
+
+    0 $accept: Document $end
+
+    1 Document: Prolog T_S Element
+
+    2 Element: EETAG
+    3        | SCTAG
+
+    4 SCTAG: ESTAG CONTENT ETAG
+
+    5 CONTENT: CONTENT OPCIONES
+    6        | /* vacío */
+
+    7 OPCIONES: T_COMMENT
+    8         | T_SS
+    9         | Element
+   10         | T_CONTENIDO
+
+   11 ESTAG: T_ESTAG T_TAG T_ATRIB T_S T_FIN_STAG
+
+   12 EETAG: T_ESTAG T_TAG T_ATRIB T_S T_FIN_ETAG
+
+   13 T_ATRIB: /* vacío */
+   14        | T_ATRIB T_SS T_ATRIBUTO T_EQ T_CONTENT
+
+   15 Prolog: XMLdec Misc Doctype
+
+   16 Misc: Misc OPCIONESMisc
+   17     | /* vacío */
+
+   18 OPCIONESMisc: T_COMMENT
+   19             | T_SPACE
+
+   20 Doctype: T_DOCTYPE T_SS T_NAME ExternalID_E T_S T_ENDDOCTYPE
+   21        | T_DOCTYPE T_SS T_NAME T_S T_ENDDOCTYPE
+
+   22 ExternalID_E: T_SS T_SYSTEM T_SS T_SYSTLIT
+   23             | T_SS T_PULIC T_SS T_PUBIDLIT T_S T_SYSTLIT
+
+   24 XMLdec: XMLdec_E
+   25       | /* vacío */
+
+   26 XMLdec_E: T_XMLDEC VersionINfo EncoDecl T_S T_F_XMLDEC
+   27         | T_XMLDEC VersionINfo T_S T_F_XMLDEC
+
+   28 VersionINfo: T_SS T_VS T_EQ T_VNUMBER
+
+   29 EncoDecl: T_SS T_ENCOD T_EQ T_ENDID
+
+   30 ETAG: T_ETAG T_TAG T_S T_FTAG
+
+   31 T_COMMENT: T_COMMENT_IN T_COMMENT_END
+
+   32 T_SS: T_SPACE
+   33     | T_SPACE T_SS
+
+   34 T_S: T_SPACE T_S
+   35    | /* vacío */
+
+
+Terminales con las reglas donde aparecen
+
+$end (0) 0
+error (256)
+T_URL (258)
+T_NUM (259)
+T_ENTER (260)
+T_SPACE (261) 19 32 33 34
+T_COMMENT_IN (262) 31
+T_COMMENT_END (263) 31
+T_CDATA_I (264)
+T_CDATA_F (265)
+CONT_DATA (266)
+T_XMLDEC (267) 26 27
+T_F_XMLDEC (268) 26 27
+T_EQ (269) 14 28 29
+T_ENCOD (270) 29
+T_ENDID (271) 29
+T_VNUMBER (272) 28
+T_VS (273) 28
+T_DOCTYPE (274) 20 21
+T_SYSTEM (275) 22
+T_PULIC (276) 23
+T_NAME (277) 20 21
+T_ENDDOCTYPE (278) 20 21
+T_PUBIDLIT (279) 23
+T_SYSTLIT (280) 22 23
+T_ETAG (281) 30
+T_TAG (282) 11 12 30
+T_FTAG (283) 30
+T_ESTAG (284) 11 12
+T_CONTENT (285) 14
+T_ATRIBUTO (286) 14
+T_FIN_ETAG (287) 12
+T_FIN_STAG (288) 11
+T_CONTENIDO (289) 10
+
+
+No terminales con las reglas donde aparecen
+
+$accept (35)
+    en la izquierda: 0
+Document (36)
+    en la izquierda: 1, en la derecha: 0
+Element (37)
+    en la izquierda: 2 3, en la derecha: 1 9
+SCTAG (38)
+    en la izquierda: 4, en la derecha: 3
+CONTENT (39)
+    en la izquierda: 5 6, en la derecha: 4 5
+OPCIONES (40)
+    en la izquierda: 7 8 9 10, en la derecha: 5
+ESTAG (41)
+    en la izquierda: 11, en la derecha: 4
+EETAG (42)
+    en la izquierda: 12, en la derecha: 2
+T_ATRIB (43)
+    en la izquierda: 13 14, en la derecha: 11 12 14
+Prolog (44)
+    en la izquierda: 15, en la derecha: 1
+Misc (45)
+    en la izquierda: 16 17, en la derecha: 15 16
+OPCIONESMisc (46)
+    en la izquierda: 18 19, en la derecha: 16
+Doctype (47)
+    en la izquierda: 20 21, en la derecha: 15
+ExternalID_E (48)
+    en la izquierda: 22 23, en la derecha: 20
+XMLdec (49)
+    en la izquierda: 24 25, en la derecha: 15
+XMLdec_E (50)
+    en la izquierda: 26 27, en la derecha: 24
+VersionINfo (51)
+    en la izquierda: 28, en la derecha: 26 27
+EncoDecl (52)
+    en la izquierda: 29, en la derecha: 26
+ETAG (53)
+    en la izquierda: 30, en la derecha: 4
+T_COMMENT (54)
+    en la izquierda: 31, en la derecha: 7 18
+T_SS (55)
+    en la izquierda: 32 33, en la derecha: 8 14 20 21 22 23 28 29 33
+T_S (56)
+    en la izquierda: 34 35, en la derecha: 1 11 12 20 21 23 26 27 30
+    34
+
+
+estado 0
+
+    0 $accept: . Document $end
+
+    T_XMLDEC  desplazar e ir al estado 1
+
+    $default  reduce usando la regla 25 (XMLdec)
+
+    Document  ir al estado 2
+    Prolog    ir al estado 3
+    XMLdec    ir al estado 4
+    XMLdec_E  ir al estado 5
+
+
+estado 1
+
+   26 XMLdec_E: T_XMLDEC . VersionINfo EncoDecl T_S T_F_XMLDEC
+   27         | T_XMLDEC . VersionINfo T_S T_F_XMLDEC
+
+    T_SPACE  desplazar e ir al estado 6
+
+    VersionINfo  ir al estado 7
+    T_SS         ir al estado 8
+
+
+estado 2
+
+    0 $accept: Document . $end
+
+    $end  desplazar e ir al estado 9
+
+
+estado 3
+
+    1 Document: Prolog . T_S Element
+
+    T_SPACE  desplazar e ir al estado 10
+
+    $default  reduce usando la regla 35 (T_S)
+
+    T_S  ir al estado 11
+
+
+estado 4
+
+   15 Prolog: XMLdec . Misc Doctype
+
+    $default  reduce usando la regla 17 (Misc)
+
+    Misc  ir al estado 12
+
+
+estado 5
+
+   24 XMLdec: XMLdec_E .
+
+    $default  reduce usando la regla 24 (XMLdec)
+
+
+estado 6
+
+   32 T_SS: T_SPACE .
+   33     | T_SPACE . T_SS
+
+    $default  reduce usando la regla 32 (T_SS)
+
+    T_SS  ir al estado 13
+
+
+estado 7
+
+   26 XMLdec_E: T_XMLDEC VersionINfo . EncoDecl T_S T_F_XMLDEC
+   27         | T_XMLDEC VersionINfo . T_S T_F_XMLDEC
+
+    T_SPACE  desplazar e ir al estado 14
+
+    $default  reduce usando la regla 35 (T_S)
+
+    EncoDecl  ir al estado 15
+    T_SS      ir al estado 16
+    T_S       ir al estado 17
+
+
+estado 8
+
+   28 VersionINfo: T_SS . T_VS T_EQ T_VNUMBER
+
+    T_VS  desplazar e ir al estado 18
+
+
+estado 9
+
+    0 $accept: Document $end .
+
+    $default  aceptar
+
+
+estado 10
+
+   34 T_S: T_SPACE . T_S
+
+    T_SPACE  desplazar e ir al estado 10
+
+    $default  reduce usando la regla 35 (T_S)
+
+    T_S  ir al estado 19
+
+
+estado 11
+
+    1 Document: Prolog T_S . Element
+
+    T_ESTAG  desplazar e ir al estado 20
+
+    Element  ir al estado 21
+    SCTAG    ir al estado 22
+    ESTAG    ir al estado 23
+    EETAG    ir al estado 24
+
+
+estado 12
+
+   15 Prolog: XMLdec Misc . Doctype
+   16 Misc: Misc . OPCIONESMisc
+
+    T_SPACE       desplazar e ir al estado 25
+    T_COMMENT_IN  desplazar e ir al estado 26
+    T_DOCTYPE     desplazar e ir al estado 27
+
+    OPCIONESMisc  ir al estado 28
+    Doctype       ir al estado 29
+    T_COMMENT     ir al estado 30
+
+
+estado 13
+
+   33 T_SS: T_SPACE T_SS .
+
+    $default  reduce usando la regla 33 (T_SS)
+
+
+estado 14
+
+   32 T_SS: T_SPACE .
+   33     | T_SPACE . T_SS
+   34 T_S: T_SPACE . T_S
+
+    T_SPACE  desplazar e ir al estado 14
+
+    T_F_XMLDEC    reduce usando la regla 35 (T_S)
+    T_ENDDOCTYPE  reduce usando la regla 35 (T_S)
+    T_FIN_ETAG    reduce usando la regla 35 (T_S)
+    T_FIN_STAG    reduce usando la regla 35 (T_S)
+    $default      reduce usando la regla 32 (T_SS)
+
+    T_SS  ir al estado 13
+    T_S   ir al estado 19
+
+
+estado 15
+
+   26 XMLdec_E: T_XMLDEC VersionINfo EncoDecl . T_S T_F_XMLDEC
+
+    T_SPACE  desplazar e ir al estado 10
+
+    $default  reduce usando la regla 35 (T_S)
+
+    T_S  ir al estado 31
+
+
+estado 16
+
+   29 EncoDecl: T_SS . T_ENCOD T_EQ T_ENDID
+
+    T_ENCOD  desplazar e ir al estado 32
+
+
+estado 17
+
+   27 XMLdec_E: T_XMLDEC VersionINfo T_S . T_F_XMLDEC
+
+    T_F_XMLDEC  desplazar e ir al estado 33
+
+
+estado 18
+
+   28 VersionINfo: T_SS T_VS . T_EQ T_VNUMBER
+
+    T_EQ  desplazar e ir al estado 34
+
+
+estado 19
+
+   34 T_S: T_SPACE T_S .
+
+    $default  reduce usando la regla 34 (T_S)
+
+
+estado 20
+
+   11 ESTAG: T_ESTAG . T_TAG T_ATRIB T_S T_FIN_STAG
+   12 EETAG: T_ESTAG . T_TAG T_ATRIB T_S T_FIN_ETAG
+
+    T_TAG  desplazar e ir al estado 35
+
+
+estado 21
+
+    1 Document: Prolog T_S Element .
+
+    $default  reduce usando la regla 1 (Document)
+
+
+estado 22
+
+    3 Element: SCTAG .
+
+    $default  reduce usando la regla 3 (Element)
+
+
+estado 23
+
+    4 SCTAG: ESTAG . CONTENT ETAG
+
+    $default  reduce usando la regla 6 (CONTENT)
+
+    CONTENT  ir al estado 36
+
+
+estado 24
+
+    2 Element: EETAG .
+
+    $default  reduce usando la regla 2 (Element)
+
+
+estado 25
+
+   19 OPCIONESMisc: T_SPACE .
+
+    $default  reduce usando la regla 19 (OPCIONESMisc)
+
+
+estado 26
+
+   31 T_COMMENT: T_COMMENT_IN . T_COMMENT_END
+
+    T_COMMENT_END  desplazar e ir al estado 37
+
+
+estado 27
+
+   20 Doctype: T_DOCTYPE . T_SS T_NAME ExternalID_E T_S T_ENDDOCTYPE
+   21        | T_DOCTYPE . T_SS T_NAME T_S T_ENDDOCTYPE
+
+    T_SPACE  desplazar e ir al estado 6
+
+    T_SS  ir al estado 38
+
+
+estado 28
+
+   16 Misc: Misc OPCIONESMisc .
+
+    $default  reduce usando la regla 16 (Misc)
+
+
+estado 29
+
+   15 Prolog: XMLdec Misc Doctype .
+
+    $default  reduce usando la regla 15 (Prolog)
+
+
+estado 30
+
+   18 OPCIONESMisc: T_COMMENT .
+
+    $default  reduce usando la regla 18 (OPCIONESMisc)
+
+
+estado 31
+
+   26 XMLdec_E: T_XMLDEC VersionINfo EncoDecl T_S . T_F_XMLDEC
+
+    T_F_XMLDEC  desplazar e ir al estado 39
+
+
+estado 32
+
+   29 EncoDecl: T_SS T_ENCOD . T_EQ T_ENDID
+
+    T_EQ  desplazar e ir al estado 40
+
+
+estado 33
+
+   27 XMLdec_E: T_XMLDEC VersionINfo T_S T_F_XMLDEC .
+
+    $default  reduce usando la regla 27 (XMLdec_E)
+
+
+estado 34
+
+   28 VersionINfo: T_SS T_VS T_EQ . T_VNUMBER
+
+    T_VNUMBER  desplazar e ir al estado 41
+
+
+estado 35
+
+   11 ESTAG: T_ESTAG T_TAG . T_ATRIB T_S T_FIN_STAG
+   12 EETAG: T_ESTAG T_TAG . T_ATRIB T_S T_FIN_ETAG
+
+    $default  reduce usando la regla 13 (T_ATRIB)
+
+    T_ATRIB  ir al estado 42
+
+
+estado 36
+
+    4 SCTAG: ESTAG CONTENT . ETAG
+    5 CONTENT: CONTENT . OPCIONES
+
+    T_SPACE       desplazar e ir al estado 6
+    T_COMMENT_IN  desplazar e ir al estado 26
+    T_ETAG        desplazar e ir al estado 43
+    T_ESTAG       desplazar e ir al estado 20
+    T_CONTENIDO   desplazar e ir al estado 44
+
+    Element    ir al estado 45
+    SCTAG      ir al estado 22
+    OPCIONES   ir al estado 46
+    ESTAG      ir al estado 23
+    EETAG      ir al estado 24
+    ETAG       ir al estado 47
+    T_COMMENT  ir al estado 48
+    T_SS       ir al estado 49
+
+
+estado 37
+
+   31 T_COMMENT: T_COMMENT_IN T_COMMENT_END .
+
+    $default  reduce usando la regla 31 (T_COMMENT)
+
+
+estado 38
+
+   20 Doctype: T_DOCTYPE T_SS . T_NAME ExternalID_E T_S T_ENDDOCTYPE
+   21        | T_DOCTYPE T_SS . T_NAME T_S T_ENDDOCTYPE
+
+    T_NAME  desplazar e ir al estado 50
+
+
+estado 39
+
+   26 XMLdec_E: T_XMLDEC VersionINfo EncoDecl T_S T_F_XMLDEC .
+
+    $default  reduce usando la regla 26 (XMLdec_E)
+
+
+estado 40
+
+   29 EncoDecl: T_SS T_ENCOD T_EQ . T_ENDID
+
+    T_ENDID  desplazar e ir al estado 51
+
+
+estado 41
+
+   28 VersionINfo: T_SS T_VS T_EQ T_VNUMBER .
+
+    $default  reduce usando la regla 28 (VersionINfo)
+
+
+estado 42
+
+   11 ESTAG: T_ESTAG T_TAG T_ATRIB . T_S T_FIN_STAG
+   12 EETAG: T_ESTAG T_TAG T_ATRIB . T_S T_FIN_ETAG
+   14 T_ATRIB: T_ATRIB . T_SS T_ATRIBUTO T_EQ T_CONTENT
+
+    T_SPACE  desplazar e ir al estado 14
+
+    $default  reduce usando la regla 35 (T_S)
+
+    T_SS  ir al estado 52
+    T_S   ir al estado 53
+
+
+estado 43
+
+   30 ETAG: T_ETAG . T_TAG T_S T_FTAG
+
+    T_TAG  desplazar e ir al estado 54
+
+
+estado 44
+
+   10 OPCIONES: T_CONTENIDO .
+
+    $default  reduce usando la regla 10 (OPCIONES)
+
+
+estado 45
+
+    9 OPCIONES: Element .
+
+    $default  reduce usando la regla 9 (OPCIONES)
+
+
+estado 46
+
+    5 CONTENT: CONTENT OPCIONES .
+
+    $default  reduce usando la regla 5 (CONTENT)
+
+
+estado 47
+
+    4 SCTAG: ESTAG CONTENT ETAG .
+
+    $default  reduce usando la regla 4 (SCTAG)
+
+
+estado 48
+
+    7 OPCIONES: T_COMMENT .
+
+    $default  reduce usando la regla 7 (OPCIONES)
+
+
+estado 49
+
+    8 OPCIONES: T_SS .
+
+    $default  reduce usando la regla 8 (OPCIONES)
+
+
+estado 50
+
+   20 Doctype: T_DOCTYPE T_SS T_NAME . ExternalID_E T_S T_ENDDOCTYPE
+   21        | T_DOCTYPE T_SS T_NAME . T_S T_ENDDOCTYPE
+
+    T_SPACE  desplazar e ir al estado 14
+
+    $default  reduce usando la regla 35 (T_S)
+
+    ExternalID_E  ir al estado 55
+    T_SS          ir al estado 56
+    T_S           ir al estado 57
+
+
+estado 51
+
+   29 EncoDecl: T_SS T_ENCOD T_EQ T_ENDID .
+
+    $default  reduce usando la regla 29 (EncoDecl)
+
+
+estado 52
+
+   14 T_ATRIB: T_ATRIB T_SS . T_ATRIBUTO T_EQ T_CONTENT
+
+    T_ATRIBUTO  desplazar e ir al estado 58
+
+
+estado 53
+
+   11 ESTAG: T_ESTAG T_TAG T_ATRIB T_S . T_FIN_STAG
+   12 EETAG: T_ESTAG T_TAG T_ATRIB T_S . T_FIN_ETAG
+
+    T_FIN_ETAG  desplazar e ir al estado 59
+    T_FIN_STAG  desplazar e ir al estado 60
+
+
+estado 54
+
+   30 ETAG: T_ETAG T_TAG . T_S T_FTAG
+
+    T_SPACE  desplazar e ir al estado 10
+
+    $default  reduce usando la regla 35 (T_S)
+
+    T_S  ir al estado 61
+
+
+estado 55
+
+   20 Doctype: T_DOCTYPE T_SS T_NAME ExternalID_E . T_S T_ENDDOCTYPE
+
+    T_SPACE  desplazar e ir al estado 10
+
+    $default  reduce usando la regla 35 (T_S)
+
+    T_S  ir al estado 62
+
+
+estado 56
+
+   22 ExternalID_E: T_SS . T_SYSTEM T_SS T_SYSTLIT
+   23             | T_SS . T_PULIC T_SS T_PUBIDLIT T_S T_SYSTLIT
+
+    T_SYSTEM  desplazar e ir al estado 63
+    T_PULIC   desplazar e ir al estado 64
+
+
+estado 57
+
+   21 Doctype: T_DOCTYPE T_SS T_NAME T_S . T_ENDDOCTYPE
+
+    T_ENDDOCTYPE  desplazar e ir al estado 65
+
+
+estado 58
+
+   14 T_ATRIB: T_ATRIB T_SS T_ATRIBUTO . T_EQ T_CONTENT
+
+    T_EQ  desplazar e ir al estado 66
+
+
+estado 59
+
+   12 EETAG: T_ESTAG T_TAG T_ATRIB T_S T_FIN_ETAG .
+
+    $default  reduce usando la regla 12 (EETAG)
+
+
+estado 60
+
+   11 ESTAG: T_ESTAG T_TAG T_ATRIB T_S T_FIN_STAG .
+
+    $default  reduce usando la regla 11 (ESTAG)
+
+
+estado 61
+
+   30 ETAG: T_ETAG T_TAG T_S . T_FTAG
+
+    T_FTAG  desplazar e ir al estado 67
+
+
+estado 62
+
+   20 Doctype: T_DOCTYPE T_SS T_NAME ExternalID_E T_S . T_ENDDOCTYPE
+
+    T_ENDDOCTYPE  desplazar e ir al estado 68
+
+
+estado 63
+
+   22 ExternalID_E: T_SS T_SYSTEM . T_SS T_SYSTLIT
+
+    T_SPACE  desplazar e ir al estado 6
+
+    T_SS  ir al estado 69
+
+
+estado 64
+
+   23 ExternalID_E: T_SS T_PULIC . T_SS T_PUBIDLIT T_S T_SYSTLIT
+
+    T_SPACE  desplazar e ir al estado 6
+
+    T_SS  ir al estado 70
+
+
+estado 65
+
+   21 Doctype: T_DOCTYPE T_SS T_NAME T_S T_ENDDOCTYPE .
+
+    $default  reduce usando la regla 21 (Doctype)
+
+
+estado 66
+
+   14 T_ATRIB: T_ATRIB T_SS T_ATRIBUTO T_EQ . T_CONTENT
+
+    T_CONTENT  desplazar e ir al estado 71
+
+
+estado 67
+
+   30 ETAG: T_ETAG T_TAG T_S T_FTAG .
+
+    $default  reduce usando la regla 30 (ETAG)
+
+
+estado 68
+
+   20 Doctype: T_DOCTYPE T_SS T_NAME ExternalID_E T_S T_ENDDOCTYPE .
+
+    $default  reduce usando la regla 20 (Doctype)
+
+
+estado 69
+
+   22 ExternalID_E: T_SS T_SYSTEM T_SS . T_SYSTLIT
+
+    T_SYSTLIT  desplazar e ir al estado 72
+
+
+estado 70
+
+   23 ExternalID_E: T_SS T_PULIC T_SS . T_PUBIDLIT T_S T_SYSTLIT
+
+    T_PUBIDLIT  desplazar e ir al estado 73
+
+
+estado 71
+
+   14 T_ATRIB: T_ATRIB T_SS T_ATRIBUTO T_EQ T_CONTENT .
+
+    $default  reduce usando la regla 14 (T_ATRIB)
+
+
+estado 72
+
+   22 ExternalID_E: T_SS T_SYSTEM T_SS T_SYSTLIT .
+
+    $default  reduce usando la regla 22 (ExternalID_E)
+
+
+estado 73
+
+   23 ExternalID_E: T_SS T_PULIC T_SS T_PUBIDLIT . T_S T_SYSTLIT
+
+    T_SPACE  desplazar e ir al estado 10
+
+    $default  reduce usando la regla 35 (T_S)
+
+    T_S  ir al estado 74
+
+
+estado 74
+
+   23 ExternalID_E: T_SS T_PULIC T_SS T_PUBIDLIT T_S . T_SYSTLIT
+
+    T_SYSTLIT  desplazar e ir al estado 75
+
+
+estado 75
+
+   23 ExternalID_E: T_SS T_PULIC T_SS T_PUBIDLIT T_S T_SYSTLIT .
+
+    $default  reduce usando la regla 23 (ExternalID_E)
