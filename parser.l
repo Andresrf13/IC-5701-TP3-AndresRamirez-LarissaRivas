@@ -13,13 +13,13 @@
   //utlizado para asignar informacion de la linea por donde el scanner va leyendo el token
 %option yylineno 
   // cambios que realize para validar los contenidos atributos 
-NUM [0-9]+|[0-9]+"%"
+NUM \"[0-9]+\"|\"[0-9]+"%"\"|\'[0-9]+\'|\'[0-9]+"%"\'
     //solo puede contener [a-zA-Z][0-9] -_.!~*'();/?:@&=+,$  formato scheme://host:port/path/filename FORMATO http://tools.ietf.org/html/rfc3986#section-3.1
 SCHEME [a-zA-Z]([a-zA-Z]|[0-9]|"+"|"-"|".")*
 HOST ([a-zA-Z]|[0-9]|[.-])+
 PORT [0-9]*
 PATH ([a-zA-Z]|[0-9]|[-_.!~*'();?:@&=+,$])*
-FILENAME {PATH}.([a-zA-Z]|[0-9])*
+FILENAME {PATH}"."([a-zA-Z]|[0-9])*
  // fin de cambios para validar contenidos
 
 S " "
@@ -58,7 +58,7 @@ TAG "a"|"b"|"blockquote"|"body"|"br"|"button"|"caption"|"code"|"dd"|"dir"|"div"|
 "--"				{error();}
 ((.)|(\n))			{FILACOLUMNA();}
 "-->"				{FILACOLUMNA(); yylval.contenido = yytext; BEGIN(INITIAL); return T_COMMENT_END;}
-'\n'                              {FILACOLUMNA();}
+'\n'                              {FILACOLUMNA(); yycolumn =  1;}
 }
 
 "<![CDATA["			{FILACOLUMNA(); yylval.contenido = "<![CDATA["; BEGIN(cDATA); return T_CDATA_I;}
@@ -68,11 +68,11 @@ TAG "a"|"b"|"blockquote"|"body"|"br"|"button"|"caption"|"code"|"dd"|"dir"|"div"|
 .				{;error();}
 }
    /*------------------------- DEFINICION XMLDec ------------------------------------*/
- "<?xml"				{FILACOLUMNA(); yylval.contenido = "<?xml"; BEGIN(XMLDec); return T_XMLDEC;}
+"<?xml"				{FILACOLUMNA(); yylval.contenido = "<?xml"; BEGIN(XMLDec); return T_XMLDEC;}
 <XMLDec>{
 "?>"				{FILACOLUMNA(); yylval.contenido = yytext; BEGIN(INITIAL);return T_F_XMLDEC;}
 {S}				{FILACOLUMNA(); yylval.contenido = yytext; return T_SPACE;} /* los espacios valen 01*/
- {EQ}				{FILACOLUMNA(); yylval.contenido = yytext; return T_EQ; } /* los iguales valen 06 */
+{EQ}				{FILACOLUMNA(); yylval.contenido = yytext; return T_EQ; } /* los iguales valen 06 */
 
  (encoding)			{FILACOLUMNA(); yylval.contenido = "encoding"; return T_ENCOD;}
 {ENCODNAME}			{FILACOLUMNA(); yylval.contenido = yytext; return T_ENDID;}
@@ -80,7 +80,7 @@ TAG "a"|"b"|"blockquote"|"body"|"br"|"button"|"caption"|"code"|"dd"|"dir"|"div"|
 (version)			{FILACOLUMNA(); yylval.contenido = "version"; return T_VS;}
 \"{VN}\"			{FILACOLUMNA(); yylval.contenido = yytext; return T_VNUMBER;}
 '{VN}'				{FILACOLUMNA(); yylval.contenido = yytext; return T_VNUMBER;}
-\n                             {FILACOLUMNA();}
+'\n'                             {FILACOLUMNA(); yycolumn =  1;}
 .				{error();}
 
 }
@@ -92,7 +92,7 @@ SYSTEM				{FILACOLUMNA(); yylval.contenido = yytext; BEGIN (SystLit);return T_SY
 PUBLIC				{FILACOLUMNA(); yylval.contenido = yytext; BEGIN (PubIDLit);return T_PULIC;}
 {NAME}				{FILACOLUMNA();  yylval.contenido = yytext; return T_NAME;}
 ">"				{FILACOLUMNA(); yylval.contenido = yytext; BEGIN(INITIAL);return T_ENDDOCTYPE;}
-\n                             {FILACOLUMNA(); }
+'\n'                             {FILACOLUMNA(); yycolumn =  1;}
 .				{FILACOLUMNA();error();}
 }
 
@@ -123,15 +123,16 @@ PUBLIC				{FILACOLUMNA(); yylval.contenido = yytext; BEGIN (PubIDLit);return T_P
 {S}				{FILACOLUMNA(); yylval.contenido = yytext; return T_SPACE;}
 {EQ}				{FILACOLUMNA(); yylval.contenido = yytext; return T_EQ;}
 {TAG}				{FILACOLUMNA(); yylval.contenido = yytext; return T_TAG;}
+{ATRIBUTO}			{FILACOLUMNA(); yylval.contenido = yytext;  return T_ATRIBUTO;}
 
 (\"http"://"www.w3.org"/"1999"/"xhtml\")	{FILACOLUMNA(); yylval.contenido = yytext; return T_URL;}
 \"{SCHEME}("://"){HOST}(":"{PORT})?("/"{PATH})*({FILENAME})?\" {FILACOLUMNA(); yylval.contenido = yytext; return T_URL;}
-\"("../"{PATH})?("/"{PATH})*({FILENAME})?\" {FILACOLUMNA(); yylval.contenido = yytext; return T_URL;}
-\'("../"{PATH})?("/"{PATH})*({FILENAME})?\' {FILACOLUMNA(); yylval.contenido = yytext; return T_URL;}
+\"("../"{PATH})?("/"{PATH})*{FILENAME}\" {FILACOLUMNA(); yylval.contenido = yytext; return T_URL;}
+\'{SCHEME}("://"){HOST}(":"{PORT})?("/"{PATH})*({FILENAME})?\' {FILACOLUMNA(); yylval.contenido = yytext; return T_URL;}
+\'("../"{PATH})?("/"{PATH})*{FILENAME}\' {FILACOLUMNA(); yylval.contenido = yytext; return T_URL;}
 {NUM}				{FILACOLUMNA(); yylval.contenido = yytext; return T_NUM;} 
 
 {CONTENIDO_ATRIBUTO}		{ FILACOLUMNA(); yylval.contenido = yytext;return T_CONTENT;}
-{ATRIBUTO}			{FILACOLUMNA(); yylval.contenido = yytext; return T_ATRIBUTO;}
 {S}?"/>"			{FILACOLUMNA(); yylval.contenido = yytext; BEGIN(INITIAL); return T_FIN_ETAG;}
 {S}?">"				{FILACOLUMNA(); yylval.contenido = yytext; BEGIN(INITIAL);  return T_FIN_STAG;}
 .				{error();}
@@ -145,7 +146,7 @@ PUBLIC				{FILACOLUMNA(); yylval.contenido = yytext; BEGIN (PubIDLit);return T_P
 <CONTENIDO>[^&<]*		{FILACOLUMNA(); yylval.contenido = yytext; return T_CONTENIDO;}*/
 [^&" "'\n'<]*			{FILACOLUMNA();  yylval.contenido = yytext; return T_CONTENIDO;}
 " "				{FILACOLUMNA(); yylval.contenido = yytext; return T_SPACE;}
-[\n]          		        {FILACOLUMNA();} /* los enters valen 00 */
+[\n]          		        {FILACOLUMNA(); yycolumn =  1;} /* los enters valen 00 */
 %%
 
 void FILACOLUMNA()

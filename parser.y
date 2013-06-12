@@ -90,17 +90,7 @@ OPCIONES : T_COMMENT    					{nodo* padre = crear_padre("OPCIONES");
 								 $$=padre;}
 	 | Element      					{nodo* padre = crear_padre("OPCIONES");
 								 padre->hijo=$1;
-								 $$=padre;}
-	 | T_URL  					{
-								 nodo* nodo1 = crear_nodo("T_URL",$1);
-								 nodo* padre = crear_padre("OPCIONES");
-								 padre->hijo=nodo1;
-								 $$=padre;}
-	| T_NUM  					{
-								 nodo* nodo1 = crear_nodo("T_NUM",$1);
-								 nodo* padre = crear_padre("OPCIONES");
-								 padre->hijo=nodo1;
-								 $$=padre;}
+								 $$=padre;}	 
 	 | T_CONTENIDO  					{
 								 nodo* nodo1 = crear_nodo("T_CONTENIDO",$1);
 								 nodo* padre = crear_padre("OPCIONES");
@@ -146,17 +136,41 @@ EETAG : T_ESTAG T_TAG T_ATRIB T_S T_FIN_ETAG 			{
 T_ATRIB : 							{ 
 								nodo* nodo_padre = crear_padre ("vacio");
 								$$ = nodo_padre;}
-	| T_ATRIB T_SS T_ATRIBUTO T_EQ T_CONTENT 		{
+	| T_ATRIB T_SS T_ATRIBUTO T_EQ T_NUM 		{
 								 nodo* nodo3 = crear_padre("T_Atributo");
 								 get_atributo(nodo3, $3);
+								 nodo* nodo4 = crear_nodo("T_EQ", "=");								 
+								 nodo* nodo5 = crear_nodo("T_NUM", $5);								 
+								 $2->hermano = nodo3;
+								 nodo3->hermano=nodo4;
+								 nodo4->hermano=nodo5;
+								 nodo *ultimo = encontrar_ultimo($1);
+								 ultimo->hermano = $2;								 
+								 $$=$1;}
+								 
+	| T_ATRIB T_SS T_ATRIBUTO T_EQ T_URL 		{
+								 nodo* nodo3 = crear_padre("T_Atributo");
+								 get_atributo(nodo3, $3);
+								 nodo* nodo4 = crear_nodo("T_EQ", "=");								 
+								 nodo* nodo5 = crear_nodo("T_URL", $5);								 
+								 $2->hermano = nodo3;
+								 nodo3->hermano=nodo4;
+								 nodo4->hermano=nodo5;
+								 nodo *ultimo = encontrar_ultimo($1);
+								 ultimo->hermano = $2;								 
+								 $$=$1;}
+								 
+	
+	| T_ATRIB T_SS T_ATRIBUTO T_EQ T_CONTENT 		{								
+								 nodo* nodo3 = crear_padre("T_Atributo");
+								 get_atributo(nodo3, $3);							 
 								 nodo* nodo4 = crear_nodo("T_EQ", "=");								 
 								 nodo* nodo5 = crear_nodo("T_CONTENT", $5);								 
 								 $2->hermano = nodo3;
 								 nodo3->hermano=nodo4;
 								 nodo4->hermano=nodo5;
 								 nodo *ultimo = encontrar_ultimo($1);
-								 ultimo->hermano = $2;
-								 
+								 ultimo->hermano = $2;								 
 								 $$=$1;}
 	
 	; 
@@ -398,7 +412,7 @@ void get_tag (nodo *Nodo, char *contenido){
 
 void get_atributo (nodo *Nodo, char *contenido){
    char cadena[]="";    
-   printf("%s", contenido);
+   /*printf("%s", contenido);*/
    int posicion = 0;
    int y = strlen(contenido);
    int  x = 0;         
