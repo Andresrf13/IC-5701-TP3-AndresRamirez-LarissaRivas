@@ -3,6 +3,7 @@
   #include <assert.h>
   #include <string.h>
   #include "clases.h"   /* contiene las estructuras y metodos de las funciones que se utilizan para construir el arbol e imprimirlo en consola */
+  #include "revisaTag.h"/* contiene las funciones que revisan los tokens*/
   void yyerror (char const *s);
   void get_tag (nodo *nodo, char *contenido);
   void get_atributo (nodo *Nodo, char *contenido);
@@ -112,7 +113,8 @@ ESTAG :T_ESTAG T_TAG T_ATRIB T_S T_FIN_STAG   			{
 								 nodo3->hermano=$4;
 								 $4->hermano=nodo5;
 								 padre->hijo=nodo1;
-								 $$=padre;}
+								 $$=padre;
+								 hayhijo(nodo2->content,nodo3); }
      
       ;
        
@@ -129,7 +131,8 @@ EETAG : T_ESTAG T_TAG T_ATRIB T_S T_FIN_ETAG 			{
 								nodo3->hermano = $4;
 								$4->hermano = nodo5;
 								padre->hijo=nodo1;
-								$$=padre;}
+								$$=padre;
+								hayhijo(nodo2->content,nodo3); }
 	
       ;
 
@@ -148,11 +151,11 @@ T_ATRIB : 							{
 								 ultimo->hermano = $2;								 
 								 $$=$1;}
 								 
-	| T_ATRIB T_SS T_ATRIBUTO T_EQ T_URL 		{
+	| T_ATRIB T_SS T_ATRIBUTO T_EQ T_URL 		{ 
 								 nodo* nodo3 = crear_padre("T_Atributo");
 								 get_atributo(nodo3, $3);
 								 nodo* nodo4 = crear_nodo("T_EQ", "=");								 
-								 nodo* nodo5 = crear_nodo("T_URL", $5);								 
+								 nodo* nodo5 = crear_nodo("T_URL", $5);									 
 								 $2->hermano = nodo3;
 								 nodo3->hermano=nodo4;
 								 nodo4->hermano=nodo5;
