@@ -6,7 +6,7 @@
   #include "revisaTag.h"/* contiene las funciones que revisan los tokens*/
   void yyerror (char const *s);
   void get_tag (nodo *nodo, char *contenido);
-  void get_atributo (nodo *Nodo, char *contenido);
+  void get_atributo (nodo *Nodo, char *contenido); 
 %}
   //se incluye location para el uso de la variable yylloc
 %locations  
@@ -103,7 +103,8 @@ ESTAG :T_ESTAG T_TAG T_ATRIB T_S T_FIN_STAG   			{
 								 nodo* nodo1 = crear_nodo("T_ESTAG", $1); 								  
 								 nodo* nodo2 = crear_padre("T_TAG");
 								 get_tag(nodo2, $2);          
-								 
+								 int fila = yylloc.first_line;
+								 int col = yylloc.first_column;
 								 nodo* nodo3 = crear_padre("T_ATRIB");
 								 nodo* nodo5 = crear_nodo("T_FIN_STAG", $5);
 								 nodo* padre = crear_padre("ESTAG");
@@ -114,7 +115,7 @@ ESTAG :T_ESTAG T_TAG T_ATRIB T_S T_FIN_STAG   			{
 								 $4->hermano=nodo5;
 								 padre->hijo=nodo1;
 								 $$=padre;
-								 hayhijo(nodo2->content,nodo3); }
+								 hayhijo(nodo2->content,nodo3,col,fila); }
      
       ;
        
@@ -122,6 +123,8 @@ EETAG : T_ESTAG T_TAG T_ATRIB T_S T_FIN_ETAG 			{
 								nodo* nodo1 = crear_nodo("T_ESTAG", $1);
 								nodo* nodo2 = crear_padre("T_TAG");
 								get_tag(nodo2,$2);
+								int fila = yylloc.first_line;
+								int col = yylloc.first_column;
 								nodo* nodo3 = crear_padre("T_ATRIB");
 								nodo* nodo5 = crear_nodo("T_FIN_ETAG", $5);
 								nodo* padre = crear_padre("EETAG");
@@ -132,9 +135,9 @@ EETAG : T_ESTAG T_TAG T_ATRIB T_S T_FIN_ETAG 			{
 								$4->hermano = nodo5;
 								padre->hijo=nodo1;
 								$$=padre;
-								hayhijo(nodo2->content,nodo3); }
-	
-      ;
+								hayhijo(nodo2->content,nodo3,col,fila); }                  
+       	
+      ;  
 
 T_ATRIB : 							{ 
 								nodo* nodo_padre = crear_padre ("vacio");
@@ -142,39 +145,51 @@ T_ATRIB : 							{
 	| T_ATRIB T_SS T_ATRIBUTO T_EQ T_NUM 		{
 								 nodo* nodo3 = crear_padre("T_Atributo");
 								 get_atributo(nodo3, $3);
-								 nodo* nodo4 = crear_nodo("T_EQ", "=");								 
+								 nodo* nodo4 = crear_nodo("T_EQ", "=");
+								 //printf(" FIla: %i Columna: %i \n", yylloc.first_line, yylloc.first_column);
+								 int fila = yylloc.first_line;
+								 int col = yylloc.first_column;
 								 nodo* nodo5 = crear_nodo("T_NUM", $5);								 
 								 $2->hermano = nodo3;
 								 nodo3->hermano=nodo4;
 								 nodo4->hermano=nodo5;
 								 nodo *ultimo = encontrar_ultimo($1);
 								 ultimo->hermano = $2;								 
-								 $$=$1;}
+								 $$=$1;
+								 revisa_contenido(0,nodo3, col, fila);}
 								 
 	| T_ATRIB T_SS T_ATRIBUTO T_EQ T_URL 		{ 
 								 nodo* nodo3 = crear_padre("T_Atributo");
 								 get_atributo(nodo3, $3);
-								 nodo* nodo4 = crear_nodo("T_EQ", "=");								 
+								 nodo* nodo4 = crear_nodo("T_EQ", "=");	
+								 //printf(" FIla: %i Columna: %i \n", yylloc.first_line, yylloc.first_column);
+								 int fila = yylloc.first_line;
+								 int col = yylloc.first_column;
 								 nodo* nodo5 = crear_nodo("T_URL", $5);									 
 								 $2->hermano = nodo3;
 								 nodo3->hermano=nodo4;
 								 nodo4->hermano=nodo5;
 								 nodo *ultimo = encontrar_ultimo($1);
 								 ultimo->hermano = $2;								 
-								 $$=$1;}
+								 $$=$1;
+								 revisa_contenido(1,nodo3, col, fila);}
 								 
 	
-	| T_ATRIB T_SS T_ATRIBUTO T_EQ T_CONTENT 		{								
+	| T_ATRIB T_SS T_ATRIBUTO T_EQ T_CONTENT 		{					  			
 								 nodo* nodo3 = crear_padre("T_Atributo");
 								 get_atributo(nodo3, $3);							 
-								 nodo* nodo4 = crear_nodo("T_EQ", "=");								 
+								 nodo* nodo4 = crear_nodo("T_EQ", "=");					
+								 //printf(" FIla: %i Columna: %i \n", yylloc.first_line, yylloc.first_column);
+								 int fila = yylloc.first_line;
+								 int col = yylloc.first_column;
 								 nodo* nodo5 = crear_nodo("T_CONTENT", $5);								 
 								 $2->hermano = nodo3;
 								 nodo3->hermano=nodo4;
 								 nodo4->hermano=nodo5;
 								 nodo *ultimo = encontrar_ultimo($1);
 								 ultimo->hermano = $2;								 
-								 $$=$1;}
+								 $$=$1;
+								 revisa_contenido(2,nodo3, col, fila);}
 	
 	; 
 
